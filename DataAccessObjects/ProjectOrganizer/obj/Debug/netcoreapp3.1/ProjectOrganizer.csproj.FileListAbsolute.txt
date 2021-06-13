@@ -1,4 +1,0 @@
-C:\Users\Student\source\repos\pairs\Capstone 2\team0-c-sharp-purple-week06-pair-exercises\6 - DAO\ProjectOrganizer\obj\Debug\netcoreapp3.1\ProjectOrganizer.csproj.AssemblyReference.cache
-C:\Users\Student\source\repos\pairs\Capstone 2\team0-c-sharp-purple-week06-pair-exercises\6 - DAO\ProjectOrganizer\obj\Debug\netcoreapp3.1\ProjectOrganizer.AssemblyInfoInputs.cache
-C:\Users\Student\source\repos\pairs\Capstone 2\team0-c-sharp-purple-week06-pair-exercises\6 - DAO\ProjectOrganizer\obj\Debug\netcoreapp3.1\ProjectOrganizer.AssemblyInfo.cs
-C:\Users\Student\source\repos\pairs\Capstone 2\team0-c-sharp-purple-week06-pair-exercises\6 - DAO\ProjectOrganizer\obj\Debug\netcoreapp3.1\ProjectOrganizer.csproj.CoreCompileInputs.cache
