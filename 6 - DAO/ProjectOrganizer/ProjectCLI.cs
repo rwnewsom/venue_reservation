@@ -199,7 +199,7 @@ namespace ProjectOrganizer
 
         private void GetAllDepartments()
         {
-            IList<Department> departments = departmentDAO.GetDepartments();
+            ICollection<Department> departments = departmentDAO.GetDepartments();
 
             if (departments.Count > 0)
             {
@@ -216,7 +216,7 @@ namespace ProjectOrganizer
 
         private void GetAllEmployees()
         {
-            IList<Employee> employees = employeeDAO.GetAllEmployees();
+            ICollection<Employee> employees = employeeDAO.GetAllEmployees();
 
             if (employees.Count > 0)
             {
@@ -236,7 +236,7 @@ namespace ProjectOrganizer
             string firstname = CLIHelper.GetString("Enter the first name:");
             string lastname = CLIHelper.GetString("Enter the last name:");
 
-            IList<Employee> employees = employeeDAO.Search(firstname, lastname);
+            ICollection<Employee> employees = employeeDAO.Search(firstname, lastname);
 
             if (employees.Count > 0)
             {
@@ -253,7 +253,7 @@ namespace ProjectOrganizer
 
         private void GetEmployeesWithoutProjects()
         {
-            IList<Employee> employees = employeeDAO.GetEmployeesWithoutProjects();
+            ICollection<Employee> employees = employeeDAO.GetEmployeesWithoutProjects();
 
             if (employees.Count > 0)
             {
@@ -270,7 +270,7 @@ namespace ProjectOrganizer
 
         private void GetAllProjects()
         {
-            IList<Project> projects = projectDAO.GetAllProjects();
+            ICollection<Project> projects = projectDAO.GetAllProjects();
 
             if (projects.Count > 0)
             {

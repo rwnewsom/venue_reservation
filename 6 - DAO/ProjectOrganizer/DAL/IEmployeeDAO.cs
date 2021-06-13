@@ -9,7 +9,7 @@ namespace ProjectOrganizer.DAL
         /// Returns a list of all of the employees.
         /// </summary>
         /// <returns>A list of all employees.</returns>
-        IList<Employee> GetAllEmployees();
+        ICollection<Employee> GetAllEmployees();
 
         /// <summary>
         /// Find all employees whose names contain the search strings.
@@ -19,12 +19,12 @@ namespace ProjectOrganizer.DAL
         /// <param name="firstname">The string to search for in the first_name field</param>
         /// <param name="lastname">The string to search for in the last_name field</param>
         /// <returns>A list of employees that matches the search.</returns>
-        IList<Employee> Search(string firstname, string lastname);
+        ICollection<Employee> Search(string firstname, string lastname);
 
         /// <summary>
         /// Gets a list of employees who are not assigned to any active projects.
         /// </summary>
         /// <returns></returns>
-        IList<Employee> GetEmployeesWithoutProjects();
+        ICollection<Employee> GetEmployeesWithoutProjects();
     }
 }

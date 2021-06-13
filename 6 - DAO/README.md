@@ -5,7 +5,7 @@
 
 **Setup:** Create a SQL Server database using the attached SQL script `projects.sql`. 
 
-Complete the CLI application for the project database by implementing the `DepartmentSqlDAO`, `EmployeeSqlDAO`, and `ProjectSqlDAO`.
+Complete the CLI application for the project database by implementing the `IDepartmentSqlDAO`, `IEmployeeSqlDAO`, and `IProjectSqlDAO` interfaces.
 
 ## Part 2 (Day 2) - Integration Testing
 

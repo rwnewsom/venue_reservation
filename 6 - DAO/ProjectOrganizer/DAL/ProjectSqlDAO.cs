@@ -18,7 +18,7 @@ namespace ProjectOrganizer.DAL
         /// Returns all projects.
         /// </summary>
         /// <returns></returns>
-        public IList<Project> GetAllProjects()
+        public ICollection<Project> GetAllProjects()
         {
             throw new NotImplementedException();
         }

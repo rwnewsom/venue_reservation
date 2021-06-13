@@ -9,7 +9,7 @@ namespace ProjectOrganizer.DAL
         /// Returns all projects.
         /// </summary>
         /// <returns></returns>
-        IList<Project> GetAllProjects();
+        ICollection<Project> GetAllProjects();
 
         /// <summary>
         /// Assigns an employee to a project.

@@ -18,7 +18,7 @@ namespace ProjectOrganizer.DAL
         /// Returns a list of all of the employees.
         /// </summary>
         /// <returns>A list of all employees.</returns>
-        public IList<Employee> GetAllEmployees()
+        public ICollection<Employee> GetAllEmployees()
         {
             throw new NotImplementedException();
         }
@@ -31,7 +31,7 @@ namespace ProjectOrganizer.DAL
         /// <param name="firstname">The string to search for in the first_name field</param>
         /// <param name="lastname">The string to search for in the last_name field</param>
         /// <returns>A list of employees that matches the search.</returns>
-        public IList<Employee> Search(string firstname, string lastname)
+        public ICollection<Employee> Search(string firstname, string lastname)
         {
             throw new NotImplementedException();
         }
@@ -40,7 +40,7 @@ namespace ProjectOrganizer.DAL
         /// Gets a list of employees who are not assigned to any active projects.
         /// </summary>
         /// <returns></returns>
-        public IList<Employee> GetEmployeesWithoutProjects()
+        public ICollection<Employee> GetEmployeesWithoutProjects()
         {
             throw new NotImplementedException();
         }

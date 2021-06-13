@@ -18,7 +18,7 @@ namespace ProjectOrganizer.DAL
         /// Returns a list of all of the departments.
         /// </summary>
         /// <returns></returns>
-        public IList<Department> GetDepartments()
+        public ICollection<Department> GetDepartments()
         {
             throw new NotImplementedException();
         }

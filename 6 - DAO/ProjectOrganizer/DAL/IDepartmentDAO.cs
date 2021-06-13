@@ -9,7 +9,7 @@ namespace ProjectOrganizer.DAL
         /// Returns a list of all departments.
         /// </summary>
         /// <returns></returns>
-        IList<Department> GetDepartments();
+        ICollection<Department> GetDepartments();
 
         /// <summary>
         /// Creates a new department.
