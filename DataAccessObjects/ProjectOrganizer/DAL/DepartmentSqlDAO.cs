@@ -9,6 +9,7 @@ namespace ProjectOrganizer.DAL
     {
         private readonly string connectionString;
         private const string SqlGetAllDepts = "SELECT * FROM department";
+        private const string SqlInsert = "INSERT INTO department (name) VALUES (@name); SELECT @@IDENTITY;";
 
 
         // Single Parameter Constructor
@@ -63,8 +64,28 @@ namespace ProjectOrganizer.DAL
         /// <param name="newDepartment">The department object.</param>
         /// <returns>The id of the new department (if successful).</returns>
         public int CreateDepartment(Department newDepartment)
-        {
-            throw new NotImplementedException();
+        { //throw new NotImplementedException();
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(this.connectionString))
+                {
+                    conn.Open();
+                    SqlCommand command = new SqlCommand(SqlInsert, conn);
+                    command.Parameters.AddWithValue("@name", newDepartment.Name);
+
+                    //get the ID of the department we created
+                    int id = Convert.ToInt32(command.ExecuteScalar());
+                    return id;
+                }
+
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine("Could not Create Department: " + ex.Message);
+                throw;
+                return -1;
+            }
+
         }
 
         /// <summary>
