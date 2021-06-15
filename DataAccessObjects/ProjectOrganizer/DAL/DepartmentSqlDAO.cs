@@ -10,7 +10,8 @@ namespace ProjectOrganizer.DAL
         private readonly string connectionString;
         private const string SqlGetAllDepts = "SELECT * FROM department";
         private const string SqlInsert = "INSERT INTO department (name) VALUES (@name); SELECT @@IDENTITY;";
-        private const string SqlUpdateDept = "UPDATE department(name) SET @updatedName WHERE @departmentId";
+        private const string SqlUpdateDept = "UPDATE department SET name = @name WHERE department_id = @id";
+                                        //UPDATE department SET name = 'Yellow' WHERE department_id = 6;
 
         // Single Parameter Constructor
         public DepartmentSqlDAO(string dbConnectionString)
@@ -83,7 +84,7 @@ namespace ProjectOrganizer.DAL
             {
                 Console.WriteLine("Could not Create Department: " + ex.Message);
                 throw;
-                return -1;
+                //return -1;
             }
 
         }
@@ -101,9 +102,10 @@ namespace ProjectOrganizer.DAL
                 {
                     conn.Open();
                     SqlCommand command = new SqlCommand(SqlUpdateDept, conn);
-
-                    //update dept name
-                    command.Parameters.AddWithValue("@departmentId", updatedDepartment.Name);
+                   
+                    command.Parameters.AddWithValue("@name", updatedDepartment.Name);
+                    command.Parameters.AddWithValue("@id", updatedDepartment.Id);
+                    command.ExecuteNonQuery();
                     return true;
 
                 }
