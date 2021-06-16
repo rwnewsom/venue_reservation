@@ -32,9 +32,7 @@ namespace ProjectOrganizer.DAL
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     conn.Open();
-
                     SqlCommand command = new SqlCommand(SqlGetAllDepts, conn);
-
                     SqlDataReader reader = command.ExecuteReader();
 
                     while (reader.Read())

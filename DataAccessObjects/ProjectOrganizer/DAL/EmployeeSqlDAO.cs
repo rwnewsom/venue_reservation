@@ -9,7 +9,8 @@ namespace ProjectOrganizer.DAL
     {
         private readonly string connectionString;
         private const string SqlGetAllEmployees = "SELECT * FROM employee";
-        private const string SqlFirstAndLast = "SELECT first_name,last_name FROM employee WHERE last_name LIKE 'Kep%'";
+        //pass the search terms firstname lastname   "UPDATE department SET name = @name WHERE department_id = @id";
+        private const string SqlFirstAndLast = "SELECT * FROM employee WHERE last_name LIKE @lastname  AND first_name LIKE @firstname";
         // Single Parameter Constructor
         public EmployeeSqlDAO(string dbConnectionString)
         {
@@ -68,35 +69,31 @@ namespace ProjectOrganizer.DAL
             List<Employee> employees = new List<Employee>();
             try
             {
+                using (SqlConnection conn = new SqlConnection(connectionString))
                 {
-                    using (SqlConnection conn = new SqlConnection(connectionString))
+                    conn.Open();
+                    SqlCommand command = new SqlCommand(SqlFirstAndLast, conn);
+                    command.Parameters.AddWithValue("@lastname", lastname);
+                    command.Parameters.AddWithValue("@firstname", firstname);
+
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
                     {
-                        conn.Open();
-                        SqlCommand command = new SqlCommand(SqlFirstAndLast, conn);
-                        SqlDataReader reader = command.ExecuteReader();
+                        Employee employee = new Employee();
+                        employee.FirstName = Convert.ToString(reader["first_name"]);
+                        employee.LastName = Convert.ToString(reader["last_name"]);
+                        employee.BirthDate = Convert.ToDateTime(reader["birth_date"]);
+                        employee.EmployeeId = Convert.ToInt32(reader["employee_id"]);
+                        employee.JobTitle = Convert.ToString(reader["job_title"]);
 
-                        while (reader.Read())
-                        {
-
-                            Employee employee = new Employee();
-                            employee.FirstName = Convert.ToString(reader["first_name"]);
-                            employee.LastName = Convert.ToString(reader["last_name"]);
-                            employee.BirthDate = Convert.ToDateTime(reader["birth_date"]);
-                            employee.EmployeeId = Convert.ToInt32(reader["employee_id"]);
-                            employee.JobTitle = Convert.ToString(reader["job_title"]);
-
-                            employees.Add(employee);
-
-
-
-                        }
+                        employees.Add(employee);
                     }
                 }
-
             }
             catch (SqlException ex)
             {
-                Console.WriteLine("Cannot find " + ex.Message);
+                Console.WriteLine("Cannot find employee: " + ex.Message);
             }
             return employees;
         }
