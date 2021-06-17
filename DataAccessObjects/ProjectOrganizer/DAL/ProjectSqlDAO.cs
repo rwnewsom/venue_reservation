@@ -7,7 +7,10 @@ namespace ProjectOrganizer.DAL
     public class ProjectSqlDAO : IProjectDAO
     {
         private readonly string connectionString;
-        private const string ReturnProjects = "SELECT * FROM employee";
+        private const string ReturnProjects = "SELECT * FROM project";
+        private const string AssignEmployee = "INSERT INTO project_employee (project_id, employee_id) VALUES (@projectId, @employeeId)";
+        private const string RemoveEmployeeFromProj = "DELETE FROM project_employee WHERE project_id = @projectId AND employee_id = @employeeId";
+        private const string CreateNewProject = "INSERT INTO project (name, from_date, to_date) VALUES (@name, @startdate,@enddate); SELECT @@IDENTITY;";
 
         // Single Parameter Constructor
         public ProjectSqlDAO(string dbConnectionString)
@@ -64,7 +67,24 @@ namespace ProjectOrganizer.DAL
         /// <returns>If it was successful.</returns>
         public bool AssignEmployeeToProject(int projectId, int employeeId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    SqlCommand command = new SqlCommand(AssignEmployee, conn);
+
+                    command.Parameters.AddWithValue("@projectId", projectId);
+                    command.Parameters.AddWithValue("@employeeId", employeeId);
+                    command.ExecuteNonQuery();
+                    return true;
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine("Could not assign employee " + ex.Message);
+                return false;
+            }
         }
 
         /// <summary>
@@ -75,7 +95,24 @@ namespace ProjectOrganizer.DAL
         /// <returns>If it was successful.</returns>
         public bool RemoveEmployeeFromProject(int projectId, int employeeId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    SqlCommand command = new SqlCommand(RemoveEmployeeFromProj, conn);
+
+                    command.Parameters.AddWithValue("@projectId", projectId);
+                    command.Parameters.AddWithValue("@employeeId", employeeId);
+                    command.ExecuteNonQuery();
+                    return true;
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine("Could not remove empoloyee from project " + ex.Message);
+                return false;
+            }
         }
 
         /// <summary>
@@ -85,7 +122,26 @@ namespace ProjectOrganizer.DAL
         /// <returns>The new id of the project.</returns>
         public int CreateProject(Project newProject)
         {
-            throw new NotImplementedException();
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(this.connectionString))
+                {
+                    conn.Open();
+                    SqlCommand command = new SqlCommand(CreateNewProject, conn);
+                    command.Parameters.AddWithValue("@name", newProject.Name);
+                    command.Parameters.AddWithValue("@startdate", newProject.StartDate);
+                    command.Parameters.AddWithValue("@enddate", newProject.EndDate);
+
+                    int id = Convert.ToInt32(command.ExecuteScalar());
+                    return id;
+                }
+
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine("Could not create new project " + ex.Message);
+                throw;
+            }
         }
 
     }
