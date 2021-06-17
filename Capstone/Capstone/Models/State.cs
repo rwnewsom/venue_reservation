@@ -7,12 +7,12 @@ namespace Capstone.Models
    public class State
     {
         /// <summary>
-        /// The state abbreviation
+        /// The 2 character abbreviation for the state
         /// </summary>
         public string StateAbbreviation { get; set; }
 
         /// <summary>
-        /// The state name
+        /// The name of the state.
         /// </summary>
         public string StateName { get; set; }
     }

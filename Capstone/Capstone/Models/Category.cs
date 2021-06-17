@@ -7,14 +7,14 @@ namespace Capstone.Models
     public class Category
     {
         /// <summary>
-        /// The category id
+        /// Primary auto incrementing id.
         /// </summary>
-        public int CategoryId { get; set; } 
+        public int CategoryId { get; set; }
 
 
 
         /// <summary>
-        /// The category name
+        /// The name of the category.
         /// </summary>
         public string CategoryName { get; set; }
 

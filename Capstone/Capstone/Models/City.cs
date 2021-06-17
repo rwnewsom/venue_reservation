@@ -7,7 +7,7 @@ namespace Capstone.Models
     public class City
     {
         /// <summary>
-        /// The city id.
+        /// Primary auto incrementing id.
         /// </summary>
         public int CityID { get; set; }
 
@@ -17,7 +17,7 @@ namespace Capstone.Models
         public string CityName { get; set; }
 
         /// <summary>
-        /// Official two letter abbreviation of state.
+        /// References the abbreviation from the state table.
         /// </summary>
         public string StateAbbreviation { get; set; }
     }
