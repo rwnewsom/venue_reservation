@@ -1,4 +1,5 @@
 ﻿using Capstone.DAL;
+using Capstone.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -21,24 +22,81 @@ namespace Capstone
     /// </remarks>
     public class UserInterface
     {
-        private readonly string connectionString;
 
-        private readonly VenueDAO venueDAO;
+        const string Command_ListVenues = "1";
+        const string Command_Quit = "q";
+
+
+        private readonly VenueSqlDAO venueDAO;
+
+       
+
+        
 
         public UserInterface(string connectionString)
         {
-            this.connectionString = connectionString;
-            venueDAO = new VenueDAO(connectionString);
+            venueDAO = new VenueSqlDAO(connectionString);
         }
+       
+      
+      
 
         public void Run()
         {
             //Console.WriteLine("Reached the User Interface.");
             PrintHeader();
-            Console.ReadLine();
+            PrintMenu();
+            while (true)
+            {
+                string command = Console.ReadLine();
+
+                Console.Clear();
+
+                switch (command.ToLower())
+                {
+                    case Command_ListVenues:
+                        ListVenues();
+                        //Console.WriteLine("Not Implemented Yet");
+                        break;
+                    
+
+                    case Command_Quit:
+                        Console.WriteLine("Thank you for using the reservation utility!");
+                        return;
+
+                    default:
+                        Console.WriteLine("The command provided was not a valid command, please try again.");
+                        break;
+                }
+
+                PrintMenu();
+            }
         }
+
+        
+        
+        private void ListVenues()
+        {
+            //ICollection<Department> departments = departmentDAO.GetDepartments();
+            ICollection<Venue> venues = venueDAO.ListVenues();
+            if (venues.Count > 0)
+            {
+                foreach (Venue venue in venues)
+                {
+                    Console.WriteLine(venue.VenueID.ToString().PadRight(10) + venue.VenueName.PadRight(40));
+                }
+            }
+            else
+            {
+                Console.WriteLine("**** NO RESULTS ****");
+            }
+            
+        }
+        
+        
         private void PrintHeader()
         {
+            Console.WriteLine();
             Console.WriteLine(@"$$$$$$$\                                                              $$\     $$\                           $$\   $$\   $$\     $$\ $$\ $$\   $$\               ");
             Console.WriteLine(@"$$  __$$\                                                             $$ |    \__|                          $$ |  $$ |  $$ |    \__|$$ |\__|  $$ |              ");
             Console.WriteLine(@"$$ |  $$ | $$$$$$\   $$$$$$$\  $$$$$$\   $$$$$$\ $$\    $$\ $$$$$$\ $$$$$$\   $$\  $$$$$$\  $$$$$$$\        $$ |  $$ |$$$$$$\   $$\ $$ |$$\ $$$$$$\   $$\   $$\ ");
@@ -50,6 +108,16 @@ namespace Capstone
             Console.WriteLine(@"                                                                                                                                                      $$\   $$ |");
             Console.WriteLine(@"                                                                                                                                                      \$$$$$$  |");
             Console.WriteLine(@"                                                                                                                                                       \______/");
+            Console.WriteLine();
+            Console.WriteLine();
+        }
+
+        private void PrintMenu()
+        {
+            Console.WriteLine("Main Menu - What would you like to do?");
+            Console.WriteLine(" 1) List Venues");
+            Console.WriteLine(" Q) Quit");
+            Console.WriteLine();
         }
     }
 }

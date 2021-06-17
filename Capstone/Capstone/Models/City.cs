@@ -4,6 +4,7 @@ using System.Text;
 
 namespace Capstone.Models
 {
+    //merge to venue along w/ state
     public class City
     {
         /// <summary>
