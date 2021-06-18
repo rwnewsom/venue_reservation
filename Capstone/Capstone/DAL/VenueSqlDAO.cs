@@ -6,10 +6,10 @@ using Capstone.Models;
 
 namespace Capstone.DAL
 {
-    class VenueSqlDAO : IVenueDAO
+    public class VenueSqlDAO 
     {
         private readonly string connectionString;
-        private const string SqlGetAllVenues = "SELECT * FROM venue;";
+        private const string SqlGetAllVenues = "SELECT * FROM venue ORDER BY name;";
 
         //Single Parameter Constructor
         public VenueSqlDAO(string dbConnectionString)
@@ -51,6 +51,8 @@ namespace Capstone.DAL
                 Console.WriteLine("error retrieveing departments: " + ex.Message);
             }
             return venues;
+
+
 
         }
     }
