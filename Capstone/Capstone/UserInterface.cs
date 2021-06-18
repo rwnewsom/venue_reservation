@@ -82,9 +82,11 @@ namespace Capstone
             if (venues.Count > 0)
             {
                 Console.WriteLine("Which venue would you like to view? ");
+                //int count = 1;
                 foreach (Venue venue in venues)
                 {
-                    Console.WriteLine(venue.VenueID.ToString() + ")".PadRight(10) + venue.VenueName.PadRight(40));
+                    Console.WriteLine(venue.VenueOrdinal + ")".PadRight(10) + venue.VenueName.PadRight(40));
+                    //count++;
                 }
                 Console.WriteLine("R) Return to previous menu.");
             }
@@ -107,13 +109,16 @@ namespace Capstone
 
                     foreach (Venue v in venues)
                     {
-                        if (v.VenueID == i)
+                        if (v.VenueOrdinal == i)
                         {
-                            int vId = v.VenueID;
-                            Venue selected = venueDAO.VenueDetails(vId);
+                            
+                            Venue selected = venueDAO.VenueDetails(v.VenueID);
                             Console.WriteLine(selected.VenueName);
-                            Console.WriteLine("Location: ");
+                            Console.WriteLine("Location: " + selected.CityName + ", " + selected.StateAbbreviation);
+                            Console.WriteLine("Categories: " + selected.CategoryName);
                             Console.WriteLine(selected.VenueDescription);
+                            Console.WriteLine();
+
                         }
                     }
 

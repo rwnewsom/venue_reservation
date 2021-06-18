@@ -12,6 +12,11 @@ namespace Capstone.Models
         public int VenueID { get; set; }
 
         /// <summary>
+        /// Allows us to re-index from 1 to n alphabetically
+        /// </summary>
+        public int VenueOrdinal { get; set;  }
+
+        /// <summary>
         /// The venue name.
         /// </summary>
         public string VenueName { get; set; }
@@ -28,5 +33,7 @@ namespace Capstone.Models
 
         public string CityName { get; set; }
         public string StateAbbreviation { get; set; }
+
+        public string CategoryName { get; set; }
     }
 }
