@@ -55,8 +55,7 @@ namespace Capstone
                 switch (command.ToLower())
                 {
                     case Command_ListVenues:
-                        ListVenues();
-                        //Console.WriteLine("Not Implemented Yet");
+                        ListVenues();                        
                         break;
                     
 
@@ -77,18 +76,35 @@ namespace Capstone
         
         private void ListVenues()
         {
-            //ICollection<Department> departments = departmentDAO.GetDepartments();
+            
             ICollection<Venue> venues = venueDAO.ListVenues();
             if (venues.Count > 0)
             {
+                Console.WriteLine("Which venue would you like to view? ");
                 foreach (Venue venue in venues)
                 {
-                    Console.WriteLine(venue.VenueID.ToString().PadRight(10) + venue.VenueName.PadRight(40));
+                    Console.WriteLine(venue.VenueID.ToString() + ")" .PadRight(10) + venue.VenueName.PadRight(40));
                 }
+                Console.WriteLine("R) Return to previous menu.");
             }
             else
             {
                 Console.WriteLine("**** NO RESULTS ****");
+            }
+            while (true)
+            {
+                string command = Console.ReadLine().ToLower();
+                if (command == "r")
+                {
+                    return;
+                }
+                
+                else
+                {
+                    Console.WriteLine("Invalid Input");
+                    break;
+                }
+                
             }
             
         }

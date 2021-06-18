@@ -13,5 +13,7 @@ namespace Capstone.DAL
         //Deny request unless list is null or empty.
         private const string SearchSpaceDate = "";
         private const string ReserveSpace = "";
+
+
     }
 }
