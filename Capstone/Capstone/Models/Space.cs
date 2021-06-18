@@ -12,6 +12,11 @@ namespace Capstone.Models
         public int SpaceId { get; set; }
 
         /// <summary>
+        /// Allows us to re-index from 1 to n alphabetically
+        /// </summary>
+        public int SpaceOrdinal { get; set; }
+
+        /// <summary>
         /// References the id from the venue table.
         /// </summary>
         public int VenueId { get; set; }
@@ -29,12 +34,12 @@ namespace Capstone.Models
         /// <summary>
         /// The month of the year this space is available from. If null, then it is always open.
         /// </summary>
-        public DateTime OpenFrom { get; set; }
+        public int? OpenFrom { get; set; }
 
         /// <summary>
         /// The month of the year this space is available until. If null, then it is never closed.
         /// </summary>
-        public DateTime OpenTo { get; set; }
+        public int? OpenTo { get; set; }
 
         /// <summary>
         /// The daily cost for renting the space.

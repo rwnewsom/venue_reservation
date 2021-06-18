@@ -27,17 +27,15 @@ namespace Capstone
         const string Command_ListVenues = "1";
         const string Command_Quit = "q";
 
-
         private readonly VenueSqlDAO venueDAO;
         private readonly CategorySqlDAO categoryDAO;
-
-
-
-
+        private readonly SpacesSqlDAO spaceDAO;
 
         public UserInterface(string connectionString)
         {
             venueDAO = new VenueSqlDAO(connectionString);
+            categoryDAO = new CategorySqlDAO(connectionString);
+            spaceDAO = new SpacesSqlDAO(connectionString);
         }
 
 
@@ -116,15 +114,53 @@ namespace Capstone
                             Venue selected = venueDAO.VenueDetails(v.VenueID);
                             Console.WriteLine(selected.VenueName);
                             Console.WriteLine("Location: " + selected.CityName + ", " + selected.StateAbbreviation);
-                            Console.WriteLine("Categories: " + selected.CategoryName);
+                            Console.WriteLine("Categories:");
                             List<string> VenueCategories = categoryDAO.ListCategories(venueId);
                             foreach (string cat in VenueCategories)
                             {
-                                Console.WriteLine(cat);
+                                Console.Write(cat + " ");
                             }
+                            Console.WriteLine();
                             Console.WriteLine(selected.VenueDescription);
                             Console.WriteLine();
 
+                        }
+                        PrintSubMenu();
+                        while (true)
+                        {
+                            string newCommand = Console.ReadLine();
+
+                            Console.Clear();
+
+                            switch (newCommand.ToLower())
+                            {
+                                case "1":
+                                    //Console.WriteLine("Implementation pending...");
+                                    ICollection<Space> spaces = spaceDAO.ListSpaces(v.VenueID);
+                                    Console.Clear();
+                                    Console.WriteLine("      "+"Name".PadRight(30)+"Open".PadRight(5) + "Close".PadRight(5) + "Daily Rate".PadRight(10) + "Max. Occupancy");
+                                    foreach (Space s in spaces)
+                                    {
+                                        Console.WriteLine("#"+s.SpaceOrdinal.ToString().PadRight(5) + s.Name.PadRight(30)+ s.OpenFrom.ToString().PadRight(5) + s.OpenTo.ToString().PadRight(5) + s.DailyRate.ToString("c").PadRight(10) + s.MaxOccupancy);
+                                    }
+                                    //ListSpaces();
+                                    break;
+
+                                case "2":
+                                    Console.WriteLine("Implementation pending...");
+                                    break;
+
+
+                                case "r":
+                                    //Console.WriteLine("Thank you for using the reservation utility!");
+                                    return;
+
+                                default:
+                                    Console.WriteLine("The command provided was not a valid command, please try again.");
+                                    break;
+                            }
+
+                            PrintSubMenu();
                         }
                     }
 
@@ -161,6 +197,15 @@ namespace Capstone
             Console.WriteLine(" 1) List Venues");
             Console.WriteLine(" Q) Quit");
             Console.WriteLine();
+        }
+
+        private void PrintSubMenu()
+        {
+            Console.WriteLine("What would you like to do next?");
+            Console.WriteLine("1) View Spaces");
+            Console.WriteLine("2) Search for Reservation");
+            Console.WriteLine("R) Return to Previous Screen");
+
         }
     }
 }

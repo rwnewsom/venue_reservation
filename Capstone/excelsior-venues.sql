@@ -361,6 +361,13 @@ SELECT * FROM reservation r INNER JOIN space s ON r.space_id = s.id WHERE s.venu
 SELECT cat.name FROM category cat INNER JOIN category_venue cv ON cv.category_id = cat.id INNER JOIN venue v ON v.id = cv.venue_id WHERE v.id = 1
 --specific DAO call as list of strings
 
+
+--******** get all spaces ---
+
+SELECT sp.name, sp.open_from, sp.open_to, sp.daily_rate, sp.max_occupancy FROM space sp INNER JOIN venue v ON v.id = sp.venue_id WHERE v.id =1
+
+
+
 SELECT 
 v.name
 , 
