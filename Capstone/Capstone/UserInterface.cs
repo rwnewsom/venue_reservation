@@ -29,6 +29,7 @@ namespace Capstone
 
 
         private readonly VenueSqlDAO venueDAO;
+        private readonly CategorySqlDAO categoryDAO;
 
 
 
@@ -111,11 +112,16 @@ namespace Capstone
                     {
                         if (v.VenueOrdinal == i)
                         {
-                            
+                            int venueId = v.VenueID;
                             Venue selected = venueDAO.VenueDetails(v.VenueID);
                             Console.WriteLine(selected.VenueName);
                             Console.WriteLine("Location: " + selected.CityName + ", " + selected.StateAbbreviation);
                             Console.WriteLine("Categories: " + selected.CategoryName);
+                            List<string> VenueCategories = categoryDAO.ListCategories(venueId);
+                            foreach (string cat in VenueCategories)
+                            {
+                                Console.WriteLine(cat);
+                            }
                             Console.WriteLine(selected.VenueDescription);
                             Console.WriteLine();
 
