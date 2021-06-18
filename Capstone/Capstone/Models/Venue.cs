@@ -25,5 +25,8 @@ namespace Capstone.Models
         /// The description of the venue.
         /// </summary>
         public string VenueDescription { get; set; }
+
+        public string CityName { get; set; }
+        public string StateAbbreviation { get; set; }
     }
 }

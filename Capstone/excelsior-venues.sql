@@ -357,6 +357,18 @@ SELECT * FROM space WHERE space.venue_id = 1;
 --get a list of reservations in date range
 SELECT * FROM reservation r INNER JOIN space s ON r.space_id = s.id WHERE s.venue_id = 1 AND r.start_date BETWEEN GETDATE()+16 AND GETDATE() +30;
 
+SELECT 
+v.name
+, 
+ct.name
+ AS 'city', 
+st.name
+ AS 'state' FROM venue v INNER JOIN city ct ON v.city_id = 
+ct.id
+ INNER JOIN state st ON ct.state_abbreviation = st.abbreviation WHERE 
+v.id
+ = 1;
+
 ROLLBACK TRANSACTION
 
 

@@ -10,6 +10,9 @@ namespace Capstone.DAL
     {
         private readonly string connectionString;
         private const string SqlGetAllVenues = "SELECT * FROM venue ORDER BY name;";
+        private const string GetVenueLocation = "SELECT v.name,ct.name AS 'city', st.name AS 'state' FROM venue v INNER JOIN city ct ON v.city_id = ct.id INNER JOIN state st ON ct.state_abbreviation = st.abbreviation WHERE v.id = 1;";
+        //SELECT v.name,ct.name AS 'city', st.name AS 'state' FROM venue v INNER JOIN city ct ON v.city_id = ct.id INNER JOIN state st ON ct.state_abbreviation = st.abbreviation WHERE v.id = 1;
+
 
         //Single Parameter Constructor
         public VenueSqlDAO(string dbConnectionString)
@@ -39,6 +42,8 @@ namespace Capstone.DAL
                         venue.VenueName = Convert.ToString(reader["name"]);
                         venue.CityId = Convert.ToInt32(reader["city_id"]);
                         venue.VenueDescription = Convert.ToString(reader["description"]);
+                        venue.CityName = Convert.ToString(reader["name"]);
+                        venue.StateAbbreviation = Convert.ToString(reader["state"]);
 
                         venues.Add(venue);
                     }
@@ -52,7 +57,7 @@ namespace Capstone.DAL
             }
             return venues;
 
-
+            
 
         }
     }

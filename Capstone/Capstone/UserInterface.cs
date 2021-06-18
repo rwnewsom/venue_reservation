@@ -3,6 +3,7 @@ using Capstone.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Data.SqlClient;
 
 namespace Capstone
 {
@@ -29,17 +30,17 @@ namespace Capstone
 
         private readonly VenueSqlDAO venueDAO;
 
-       
 
-        
+
+
 
         public UserInterface(string connectionString)
         {
             venueDAO = new VenueSqlDAO(connectionString);
         }
-       
-      
-      
+
+
+
 
         public void Run()
         {
@@ -55,9 +56,9 @@ namespace Capstone
                 switch (command.ToLower())
                 {
                     case Command_ListVenues:
-                        ListVenues();                        
+                        ListVenues();
                         break;
-                    
+
 
                     case Command_Quit:
                         Console.WriteLine("Thank you for using the reservation utility!");
@@ -72,18 +73,18 @@ namespace Capstone
             }
         }
 
-        
-        
+
+
         private void ListVenues()
         {
-            
+
             ICollection<Venue> venues = venueDAO.ListVenues();
             if (venues.Count > 0)
             {
                 Console.WriteLine("Which venue would you like to view? ");
                 foreach (Venue venue in venues)
                 {
-                    Console.WriteLine(venue.VenueID.ToString() + ")" .PadRight(10) + venue.VenueName.PadRight(40));
+                    Console.WriteLine(venue.VenueID.ToString() + ")".PadRight(10) + venue.VenueName.PadRight(40));
                 }
                 Console.WriteLine("R) Return to previous menu.");
             }
@@ -93,23 +94,37 @@ namespace Capstone
             }
             while (true)
             {
+
                 string command = Console.ReadLine().ToLower();
                 if (command == "r")
                 {
                     return;
                 }
-                
                 else
                 {
+                    int i = int.Parse(command);
+
+
+                    foreach (Venue v in venues)
+                    {
+                        if (v.VenueID == i)
+                        {
+                            Venue selected = v;
+                            Console.WriteLine(selected.VenueName);
+                            Console.WriteLine("Location: " );
+                            Console.WriteLine(selected.VenueDescription);
+                        }
+                    }
+
                     Console.WriteLine("Invalid Input");
                     break;
                 }
-                
+
             }
-            
+
         }
-        
-        
+
+
         private void PrintHeader()
         {
             Console.WriteLine();
