@@ -1,4 +1,6 @@
-﻿using System;
+﻿
+/*
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -22,4 +24,4 @@ namespace Capstone.Models
         /// </summary>
         public string StateAbbreviation { get; set; }
     }
-}
+} */

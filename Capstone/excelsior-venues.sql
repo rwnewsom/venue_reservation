@@ -357,6 +357,10 @@ SELECT * FROM space WHERE space.venue_id = 1;
 --get a list of reservations in date range
 SELECT * FROM reservation r INNER JOIN space s ON r.space_id = s.id WHERE s.venue_id = 1 AND r.start_date BETWEEN GETDATE()+16 AND GETDATE() +30;
 
+--*******************
+SELECT cat.name FROM category cat INNER JOIN category_venue cv ON cv.category_id = cat.id INNER JOIN venue v ON v.id = cv.venue_id WHERE v.id = 1
+--specific DAO call as list of strings
+
 SELECT 
 v.name
 , 
