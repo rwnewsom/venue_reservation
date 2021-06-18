@@ -344,3 +344,20 @@ ALTER TABLE category_venue ADD FOREIGN KEY (category_id) REFERENCES category(id)
 ALTER TABLE reservation ADD FOREIGN KEY (space_id) REFERENCES space(id)
 
 COMMIT TRANSACTION
+
+
+--Test our queries here before pasting into project methods
+BEGIN TRANSACTION
+
+--select venue
+SELECT v.name, ct.name, st.name, c.name AS 'category', v.description FROM venue v INNER JOIN city ct ON v.city_id = ct.id INNER JOIN state st ON ct.state_abbreviation = st.abbreviation INNER JOIN category_venue cv ON v.id = cv.venue_id INNER JOIN category c ON cv.category_id = c.id WHERE v.id = 1;
+--id venue spaces
+SELECT * FROM space WHERE space.venue_id = 1;
+
+--get a list of reservations in date range
+SELECT * FROM reservation r INNER JOIN space s ON r.space_id = s.id WHERE s.venue_id = 1 AND r.start_date BETWEEN GETDATE()+16 AND GETDATE() +30;
+
+ROLLBACK TRANSACTION
+
+
+
