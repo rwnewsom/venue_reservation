@@ -29,7 +29,7 @@ namespace Capstone
 
 
         private readonly VenueSqlDAO venueDAO;
-
+        
 
 
 
@@ -109,10 +109,11 @@ namespace Capstone
                     {
                         if (v.VenueID == i)
                         {
-                            Venue selected = v;
-                            Console.WriteLine(selected.VenueName);
-                            Console.WriteLine("Location: " );
-                            Console.WriteLine(selected.VenueDescription);
+                            // v;
+                            Venue selected = venueDAO.VenueDetails(v.VenueID);
+                          Console.WriteLine(selected.VenueName);
+                          Console.WriteLine("Location: " );
+                          Console.WriteLine(selected.VenueDescription);
                         }
                     }
 
