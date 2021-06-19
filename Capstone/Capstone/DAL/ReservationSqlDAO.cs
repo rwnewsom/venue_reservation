@@ -11,7 +11,7 @@ namespace Capstone.DAL
         private readonly string connectionString;
         //Build a list of reservations overlapping requested date.
         //Deny request unless list is null or empty.
-        private const string SearchSpaceDate = "SELECT r.reservation_id, r.space_id, r.number_of_attendees, r.start_date, r.end_date, r.reserved_for FROM reservation r INNER JOIN space sp ON sp.id = r.space_id";
+        private const string SearchSpaceDate = "SELECT r.reservation_id AS 'id', r.space_id AS 'spaceid', r.number_of_attendees AS 'attendencenumber', r.start_date AS 'startdate', r.end_date AS 'enddate', r.reserved_for AS 'reservedfor', v.id AS 'vid', sp.name AS 'sp_name' FROM reservation r INNER JOIN space sp ON sp.id = r.space_id INNER JOIN venue v ON sp.venue_id = v.id WHERE v.id = @vid"; //
 
         private const string ReserveSpace = "";
 
@@ -21,7 +21,7 @@ namespace Capstone.DAL
             connectionString = dbConnectionString;
         }
 
-        public ICollection<Reservation> ListReservations()
+        public ICollection<Reservation> ListReservations(int chosenVenue)
         {
             List<Reservation> reservations = new List<Reservation>();
             try
@@ -30,17 +30,22 @@ namespace Capstone.DAL
                 {
                     conn.Open();
                     SqlCommand command = new SqlCommand(SearchSpaceDate, conn);
+                    command.Parameters.AddWithValue("@vid", chosenVenue);
                     SqlDataReader reader = command.ExecuteReader();
                     int ordCount = 1;
                     while (reader.Read())
                     {
+                        
                         Reservation reservation = new Reservation();
+                        reservation.ReservatoinOrdinal = ordCount;
                         reservation.ReservationId = Convert.ToInt32(reader["id"]);
                         reservation.SpaceId = Convert.ToInt32(reader["spaceid"]);
                         reservation.NumberOfAttendees = Convert.ToInt32(reader["attendencenumber"]);
                         reservation.StartDate = Convert.ToDateTime(reader["startdate"]);
                         reservation.EndDate = Convert.ToDateTime(reader["enddate"]);
                         reservation.ReservedFor = Convert.ToString(reader["reservedfor"]);
+                        reservation.VenueID = Convert.ToInt32(reader["vid"]);
+                        reservation.SpaceName = Convert.ToString(reader["sp_name"]);
                         reservations.Add(reservation);
                         ordCount++;
                     }

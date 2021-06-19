@@ -33,12 +33,14 @@ namespace Capstone
         private readonly ReservationSqlDAO reservationDAO;
 
         int chosenVenue = 0;
+        //int chosenSpace = 0;
 
         public UserInterface(string connectionString)
         {
             venueDAO = new VenueSqlDAO(connectionString);
             categoryDAO = new CategorySqlDAO(connectionString);
             spaceDAO = new SpacesSqlDAO(connectionString);
+            reservationDAO = new ReservationSqlDAO(connectionString);
         }
 
 
@@ -146,7 +148,13 @@ namespace Capstone
                                         break;
 
                                     case "2":
-                                        Console.WriteLine("");
+                                        ICollection<Reservation> reservations = reservationDAO.ListReservations(chosenVenue);
+                                        Console.Clear();
+                                        Console.WriteLine("The following reservations exist for this venue:");
+                                        foreach (Reservation r in reservations)
+                                        {
+                                            Console.WriteLine(r.ReservatoinOrdinal +": " +r.SpaceName +"\t" + r.ReservedFor);
+                                        }
                                         break;
 
 
@@ -211,5 +219,9 @@ namespace Capstone
             Console.WriteLine("R) Return to Previous Screen");
 
         }
+
+        
+
+        
     }
 }

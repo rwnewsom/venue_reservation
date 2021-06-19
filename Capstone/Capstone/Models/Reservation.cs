@@ -39,5 +39,15 @@ namespace Capstone.Models
         /// Allows us to re-index from 1 to n alphabetically
         /// </summary>
         public int ReservatoinOrdinal { get; set; }
+
+        /// <summary>
+        /// references the id from the venue table.
+        /// </summary>
+        public int VenueID { get; set; }
+
+        /// <summary>
+        /// The name of the space.
+        /// </summary>
+        public string SpaceName { get; set; }
     }
 }
