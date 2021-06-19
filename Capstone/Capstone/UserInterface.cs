@@ -220,6 +220,13 @@ namespace Capstone
 
         }
 
+        private void PrintSpaceMenu()
+        {
+            Console.WriteLine("What would you like to do next?");
+            Console.WriteLine("1) Reserve a space");
+            Console.WriteLine("R) Return to previous screen");        
+        }
+
         
 
         
