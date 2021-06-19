@@ -30,6 +30,7 @@ namespace Capstone
         private readonly VenueSqlDAO venueDAO;
         private readonly CategorySqlDAO categoryDAO;
         private readonly SpacesSqlDAO spaceDAO;
+        private readonly ReservationSqlDAO reservationDAO;
 
         int chosenVenue = 0;
 
@@ -145,7 +146,7 @@ namespace Capstone
                                         break;
 
                                     case "2":
-                                        Console.WriteLine("Implementation pending...");
+                                        Console.WriteLine("");
                                         break;
 
 

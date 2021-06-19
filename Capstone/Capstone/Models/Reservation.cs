@@ -35,7 +35,9 @@ namespace Capstone.Models
         /// The name of the person or organization this reservation is for.
         /// </summary>
         public string ReservedFor { get; set; }
-
-
+        /// <summary>
+        /// Allows us to re-index from 1 to n alphabetically
+        /// </summary>
+        public int ReservatoinOrdinal { get; set; }
     }
 }
