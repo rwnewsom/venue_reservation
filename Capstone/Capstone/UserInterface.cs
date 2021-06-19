@@ -31,6 +31,8 @@ namespace Capstone
         private readonly CategorySqlDAO categoryDAO;
         private readonly SpacesSqlDAO spaceDAO;
 
+        int chosenVenue = 0;
+
         public UserInterface(string connectionString)
         {
             venueDAO = new VenueSqlDAO(connectionString);
@@ -43,7 +45,6 @@ namespace Capstone
 
         public void Run()
         {
-            //Console.WriteLine("Reached the User Interface.");
             PrintHeader();
             PrintMenu();
             while (true)
@@ -81,11 +82,9 @@ namespace Capstone
             if (venues.Count > 0)
             {
                 Console.WriteLine("Which venue would you like to view? ");
-                //int count = 1;
                 foreach (Venue venue in venues)
                 {
                     Console.WriteLine(venue.VenueOrdinal + ")".PadRight(10) + venue.VenueName.PadRight(40));
-                    //count++;
                 }
                 Console.WriteLine("R) Return to previous menu.");
             }
@@ -111,6 +110,7 @@ namespace Capstone
                         if (v.VenueOrdinal == i)
                         {
                             int venueId = v.VenueID;
+                            chosenVenue = venueId;
                             Venue selected = venueDAO.VenueDetails(v.VenueID);
                             Console.WriteLine(selected.VenueName);
                             Console.WriteLine("Location: " + selected.CityName + ", " + selected.StateAbbreviation);
@@ -124,49 +124,52 @@ namespace Capstone
                             Console.WriteLine(selected.VenueDescription);
                             Console.WriteLine();
 
-                        }
-                        PrintSubMenu();
-                        while (true)
-                        {
-                            string newCommand = Console.ReadLine();
-
-                            Console.Clear();
-
-                            switch (newCommand.ToLower())
-                            {
-                                case "1":
-                                    //Console.WriteLine("Implementation pending...");
-                                    ICollection<Space> spaces = spaceDAO.ListSpaces(v.VenueID);
-                                    Console.Clear();
-                                    Console.WriteLine("      "+"Name".PadRight(30)+"Open".PadRight(5) + "Close".PadRight(5) + "Daily Rate".PadRight(10) + "Max. Occupancy");
-                                    foreach (Space s in spaces)
-                                    {
-                                        Console.WriteLine("#"+s.SpaceOrdinal.ToString().PadRight(5) + s.Name.PadRight(30)+ s.OpenFrom.ToString().PadRight(5) + s.OpenTo.ToString().PadRight(5) + s.DailyRate.ToString("c").PadRight(10) + s.MaxOccupancy);
-                                    }
-                                    //ListSpaces();
-                                    break;
-
-                                case "2":
-                                    Console.WriteLine("Implementation pending...");
-                                    break;
-
-
-                                case "r":
-                                    //Console.WriteLine("Thank you for using the reservation utility!");
-                                    return;
-
-                                default:
-                                    Console.WriteLine("The command provided was not a valid command, please try again.");
-                                    break;
-                            }
-
+                            
                             PrintSubMenu();
+                            while (true)
+                            {
+                                string newCommand = Console.ReadLine();
+
+                                Console.Clear();
+
+                                switch (newCommand.ToLower())
+                                {
+                                    case "1":
+                                        ICollection<Space> spaces = spaceDAO.ListSpaces(chosenVenue);
+                                        Console.Clear();
+                                        Console.WriteLine("      " + "Name".PadRight(30) + "Open".PadRight(5) + "Close".PadRight(5) + "Daily Rate".PadRight(10) + "Max. Occupancy");
+                                        foreach (Space s in spaces)
+                                        {
+                                            Console.WriteLine("#" + s.SpaceOrdinal.ToString().PadRight(5) + s.Name.PadRight(30) + s.OpenFrom.ToString().PadRight(5) + s.OpenTo.ToString().PadRight(5) + s.DailyRate.ToString("c").PadRight(10) + s.MaxOccupancy);
+                                        }
+                                        break;
+
+                                    case "2":
+                                        Console.WriteLine("Implementation pending...");
+                                        break;
+
+
+                                    case "r":
+                                        return;
+
+                                    default:
+                                        Console.WriteLine("The command provided was not a valid command, please try again.");
+                                        break;
+                                }
+
+                                PrintSubMenu();
+                            } 
+
+
                         }
+                       
                     }
 
                     Console.WriteLine("Invalid Input");
                     break;
                 }
+               
+
 
             }
 
