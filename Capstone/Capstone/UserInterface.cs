@@ -31,6 +31,7 @@ namespace Capstone
         private readonly CategorySqlDAO categoryDAO;
         private readonly SpacesSqlDAO spaceDAO;
         private readonly ReservationSqlDAO reservationDAO;
+        private readonly DateConverter dateCon = new DateConverter();
 
         int chosenVenue = 0;
         //int chosenSpace = 0;
@@ -140,10 +141,13 @@ namespace Capstone
                                     case "1":
                                         ICollection<Space> spaces = spaceDAO.ListSpaces(chosenVenue);
                                         Console.Clear();
-                                        Console.WriteLine("      " + "Name".PadRight(30) + "Open".PadRight(5) + "Close".PadRight(5) + "Daily Rate".PadRight(10) + "Max. Occupancy");
+                                        Console.WriteLine("     Name                Open   Close   Daily Rate   Max. Occupancy");
                                         foreach (Space s in spaces)
                                         {
-                                            Console.WriteLine("#" + s.SpaceOrdinal.ToString().PadRight(5) + s.Name.PadRight(30) + s.OpenFrom.ToString().PadRight(5) + s.OpenTo.ToString().PadRight(5) + s.DailyRate.ToString("c").PadRight(10) + s.MaxOccupancy);
+
+                                            string openFrom = dateCon.FormatDate(s.OpenFrom);
+                                            string openTo = dateCon.FormatDate(s.OpenTo);
+                                            Console.WriteLine("#" + s.SpaceOrdinal.ToString().PadRight(5) + s.Name.PadRight(20) + openFrom.PadRight(7) + openTo.PadRight(8) + s.DailyRate.ToString("c").PadRight(13) + s.MaxOccupancy);
                                         }
                                         PrintSpaceMenu();
                                         string userInput = Console.ReadLine().ToLower();
@@ -168,12 +172,22 @@ namespace Capstone
                                             ICollection<Reservation> reservationSpace = reservationDAO.SearchSpace(attendees, stayLength, startDate, chosenVenue);
                                             Console.Clear();
                                             Console.WriteLine("The following spaces are available based on your needs:");
-
+                                            Console.WriteLine();
+                                            Console.WriteLine("Space #   Name                Daily Rate   Max Occup.   Accessible?   Total Cost");
                                             foreach (Reservation r in reservationSpace)
                                             {
-                                                Console.WriteLine(r.SpaceId);
-                                                Console.WriteLine(r.SpaceName);
-                                                Console.WriteLine(r.DailyRate);
+                                                decimal totalCost = r.DailyRate * stayLength;
+                                                string adaComp = "";
+                                                if (r.IsAccessible)
+                                                {
+                                                    adaComp = "Yes";
+                                                }
+                                                else
+                                                {
+                                                    adaComp = "No";
+                                                }
+                                                Console.WriteLine(r.SpaceId.ToString().PadRight(10) + r.SpaceName.PadRight(20) + r.DailyRate.ToString("c").PadRight(13) + r.MaxOccupancy.ToString().PadRight(13) + adaComp.PadRight(14) + totalCost.ToString("c"));
+
                                             }
                                             Console.ReadLine();
 

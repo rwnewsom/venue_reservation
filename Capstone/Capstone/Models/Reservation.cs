@@ -54,5 +54,15 @@ namespace Capstone.Models
         /// The daily cost for renting the space.
         /// </summary>
         public Decimal DailyRate { get; set; }
+
+        /// <summary>
+        /// The maximum number of people that the space is able to safely support.
+        /// </summary>
+        public int MaxOccupancy { get; set; }
+
+        /// <summary>
+        /// Whether or not this space is handicap accessible.
+        /// </summary>
+        public bool IsAccessible { get; set; }
     }
 }
