@@ -13,7 +13,7 @@ namespace Capstone.DAL
         //Deny request unless list is null or empty.
         private const string SearchSpaceDate = "SELECT r.reservation_id AS 'id', r.space_id AS 'spaceid', r.number_of_attendees AS 'attendencenumber', r.start_date AS 'startdate', r.end_date AS 'enddate', r.reserved_for AS 'reservedfor', v.id AS 'vid', sp.name AS 'sp_name' FROM reservation r INNER JOIN space sp ON sp.id = r.space_id INNER JOIN venue v ON sp.venue_id = v.id WHERE v.id = @vid"; 
 
-        private const string ReserveSpace = "SELECT s.id, @s.daily_rate = dailyrate, @s.max_occupancy = max FROM reservation r JOIN space s on r.space_id = s.id WHERE s.venue_id = 1 AND r.end_date >= '2021-06-21' AND r.start_date <= '2021-06-16' SELECT v.name, ct.name AS 'city', st.name  AS 'state' FROM venue v INNER JOIN city ct ON v.city_id = ct.id INNER JOIN state st ON ct.state_abbreviation = st.abbreviation WHERE v.id = @vid; @@IDENTITY";
+        private const string AvailableSpaces = "SELECT s.id AS 'sid', s.name AS 'name', s.daily_rate AS 'rate' FROM space s WHERE venue_id = @vid AND s.max_occupancy >= @attendees AND s.id NOT IN(SELECT s.id from reservation r JOIN space s on r.space_id = s.id WHERE s.venue_id = @vid AND r.end_date >= @startdate AND r.start_date <= @enddate)";
 
         public ReservationSqlDAO (string dbConnectionString)
         {
@@ -52,40 +52,49 @@ namespace Capstone.DAL
             }
             catch (SqlException ex)
             {
-                Console.WriteLine("Error retreiving reservations: " + ex.Message);
+                Console.WriteLine("Error retrieving reservations: " + ex.Message);
 
             }
             return reservations;
         }
-        public Reservation SearchSpace(int attendees, int stayLength, DateTime startDate)
+        public ICollection <Reservation> SearchSpace(int attendees, int stayLength, DateTime startDate, int chosenVenue)
         {
-            Reservation reservation = new Reservation();
+            DateTime endDate = startDate.AddDays(stayLength);
+            List<Reservation> availableSpaces = new List<Reservation>();
             try
             {
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     conn.Open();
-                    SqlCommand command = new SqlCommand(ReserveSpace, conn);
-                    //command.Parameters.AddWithValue("@vid", attendees);
+                    //DateTime initialDate = startDate;
+                    //TimeSpan duration = new TimeSpan(stayLength, 0, 0, 0);
+                   
+                    SqlCommand command = new SqlCommand(AvailableSpaces, conn);
+                    command.Parameters.AddWithValue("@vid", chosenVenue);
+                    command.Parameters.AddWithValue("@attendees", attendees);
+                    command.Parameters.AddWithValue("@enddate", startDate);
+                    command.Parameters.AddWithValue("@startdate", endDate);
                     SqlDataReader reader = command.ExecuteReader();
 
                     while (reader.Read())
                     {
+                        Reservation reservation = new Reservation();
                         reservation.SpaceId = Convert.ToInt32(reader["sid"]);
                         reservation.SpaceName = Convert.ToString(reader["name"]);
-                        reservation.StartDate = Convert.ToDateTime(reader["startdate"]);
-                        reservation.EndDate = Convert.ToDateTime(reader["enddate"]);
-                        
+                        reservation.DailyRate = Convert.ToDecimal(reader["rate"]);
+                        //reservation.StartDate = Convert.ToDateTime(reader["startdate"]);
+                        //reservation.EndDate = Convert.ToDateTime(reader["enddate"]);
+                        availableSpaces.Add(reservation);
 
                     }
-                    reader.NextResult();
+                    //reader.NextResult();
                 }
             }
             catch (SqlException ex)
             {
                 Console.WriteLine("Error: " + ex.Message);
             }
-            return reservation;
+            return availableSpaces;
         }
     }
 }

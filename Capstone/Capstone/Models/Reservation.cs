@@ -49,5 +49,10 @@ namespace Capstone.Models
         /// The name of the space.
         /// </summary>
         public string SpaceName { get; set; }
+
+        /// <summary>
+        /// The daily cost for renting the space.
+        /// </summary>
+        public Decimal DailyRate { get; set; }
     }
 }

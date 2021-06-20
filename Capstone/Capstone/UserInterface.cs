@@ -127,7 +127,7 @@ namespace Capstone
                             Console.WriteLine(selected.VenueDescription);
                             Console.WriteLine();
 
-                            
+
                             PrintSubMenu();
                             while (true)
                             {
@@ -145,7 +145,44 @@ namespace Capstone
                                         {
                                             Console.WriteLine("#" + s.SpaceOrdinal.ToString().PadRight(5) + s.Name.PadRight(30) + s.OpenFrom.ToString().PadRight(5) + s.OpenTo.ToString().PadRight(5) + s.DailyRate.ToString("c").PadRight(10) + s.MaxOccupancy);
                                         }
-                                        break;
+                                        PrintSpaceMenu();
+                                        string userInput = Console.ReadLine().ToLower();
+                                        if (userInput == "r")
+                                        {
+                                            Console.Clear();
+                                            return;
+                                        }
+
+                                        else if (userInput == "1")
+                                        {
+                                            Console.WriteLine("When do you need the space? mon/day/year");
+                                            string reply = Console.ReadLine();
+                                            DateTime startDate = DateTime.Parse(reply);
+                                            Console.WriteLine("How many days will you need the space? ");
+                                            reply = Console.ReadLine();
+                                            int stayLength = int.Parse(reply);
+                                            Console.WriteLine("How many people will be in attendance? ");
+                                            reply = Console.ReadLine();
+                                            int attendees = int.Parse(reply);
+
+                                            ICollection<Reservation> reservationSpace = reservationDAO.SearchSpace(attendees, stayLength, startDate, chosenVenue);
+                                            Console.Clear();
+                                            Console.WriteLine("The following spaces are available based on your needs:");
+
+                                            foreach (Reservation r in reservationSpace)
+                                            {
+                                                Console.WriteLine(r.SpaceId);
+                                                Console.WriteLine(r.SpaceName);
+                                                Console.WriteLine(r.DailyRate);
+                                            }
+                                            Console.ReadLine();
+
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine("Invalid Input. Returning to previous menu.");
+                                        }
+                                        return;
 
                                     case "2":
                                         ICollection<Reservation> reservations = reservationDAO.ListReservations(chosenVenue);
@@ -153,30 +190,15 @@ namespace Capstone
                                         Console.WriteLine("The following reservations exist for this venue:");
                                         foreach (Reservation r in reservations)
                                         {
-                                            Console.WriteLine(r.ReservatoinOrdinal +": " +r.SpaceName +"\t" + r.ReservedFor);
+                                            Console.WriteLine(r.ReservatoinOrdinal + ": " + r.SpaceName + "\t" + r.ReservedFor);
                                         }
+
                                         break;
 
-                                    case "3":
-                                        Console.WriteLine("When do you need the space? ");
-                                        string reply = Console.ReadLine();
-                                        DateTime startDate = DateTime.Parse(reply) ;
-                                        Console.WriteLine("How many days will you need the space? ");
-                                        reply = Console.ReadLine();
-                                        int stayLength = int.Parse(reply);
-                                        Console.WriteLine("How many people will be in attendance? ");
-                                        reply = Console.ReadLine();
-                                        int attendees = int.Parse(reply);
+                                    /*
+                                         //case "3":
 
-                                        ICollection<Reservation> reservationSpace = (ICollection<Reservation>)reservationDAO.SearchSpace(attendees, stayLength, startDate);
-                                        Console.Clear();
-                                        Console.WriteLine("The following spaces are available based on your needs:");
-
-                                        foreach(Reservation r in reservationSpace)
-                                        {
-                                            Console.WriteLine(r.SpaceId + r.SpaceName + )
-                                        }
-                                        
+                                         */
 
 
                                     case "r":
@@ -187,18 +209,18 @@ namespace Capstone
                                         break;
                                 }
 
-                                PrintSubMenu();
-                            } 
+                                //PrintSubMenu();
+                            }
 
 
                         }
-                       
+
                     }
 
                     Console.WriteLine("Invalid Input");
                     break;
                 }
-               
+
 
 
             }
@@ -245,13 +267,13 @@ namespace Capstone
         {
             Console.WriteLine("What would you like to do next?");
             Console.WriteLine("1) Reserve a space");
-            Console.WriteLine("R) Return to previous screen");        
+            Console.WriteLine("R) Return to previous screen");
         }
 
 
 
-        
 
-        
+
+
     }
 }
