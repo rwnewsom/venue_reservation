@@ -14,6 +14,8 @@ namespace Capstone.DAL
 
         private const string AvailableSpaces = "SELECT s.id AS 'sid', s.name AS 'name', s.daily_rate AS 'rate', s.max_occupancy AS 'max', s.is_accessible AS 'accessible' FROM space s WHERE venue_id = @vid AND s.max_occupancy >= @attendees AND s.id NOT IN(SELECT s.id from reservation r JOIN space s on r.space_id = s.id WHERE s.venue_id = @vid AND r.end_date >= @startdate AND r.start_date <= @enddate)";
 
+        private const string InsertNewReservation = "INSERT INTO reservation (space_id, number_of_attendees, start_date, end_date, reserved_for) VALUES (@space_id, @numattendees,@start_date, @end_date, @reserved_for); SELECT @@IDENTITY;";
+
         public ReservationSqlDAO (string dbConnectionString)
         {
             connectionString = dbConnectionString;
@@ -103,5 +105,36 @@ namespace Capstone.DAL
             }
             return availableSpaces;
         }
+
+
+        
+        public int CreateReservation(int spaceId, int numAttendees, DateTime startDate, DateTime endDate, string reservedFor)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(this.connectionString))
+                {
+                    conn.Open();
+                    SqlCommand command = new SqlCommand(InsertNewReservation, conn);
+                    
+                    command.Parameters.AddWithValue("@space_id", spaceId);
+                    command.Parameters.AddWithValue("@numattendees", numAttendees);
+                    command.Parameters.AddWithValue("@start_date", startDate);
+                    command.Parameters.AddWithValue("@end_date", endDate);
+                    command.Parameters.AddWithValue("@reserved_for", reservedFor);
+
+                    int id = Convert.ToInt32(command.ExecuteScalar());
+                    return id;
+                }
+
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine("Could not create new reservation " + ex.Message);
+                return -1;
+            }
+        }
+
+
     }
 }

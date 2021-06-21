@@ -34,7 +34,7 @@ namespace Capstone
         private readonly DateConverter dateCon = new DateConverter();
 
         int chosenVenue = 0;
-        //int chosenSpace = 0;
+        int chosenSpace = 0;
 
         public UserInterface(string connectionString)
         {
@@ -189,8 +189,42 @@ namespace Capstone
                                                 Console.WriteLine(r.SpaceId.ToString().PadRight(10) + r.SpaceName.PadRight(20) + r.DailyRate.ToString("c").PadRight(13) + r.MaxOccupancy.ToString().PadRight(13) + adaComp.PadRight(14) + totalCost.ToString("c"));
 
                                             }
-                                            Console.ReadLine();
+                                            //Console.ReadLine();
+                                            Console.WriteLine("Which space would you like to reserve (enter 0 to cancel)?");
+                                            string userChoice = Console.ReadLine();
+                                            if(userChoice == "0")
+                                            {
+                                                return;
+                                            }
+                                            else
+                                            {
+                                                chosenSpace = int.Parse(userChoice);
 
+                                                foreach (Reservation r in reservationSpace)
+                                                {
+                                                    if (r.SpaceId == chosenSpace)
+                                                    {
+                                                        Console.WriteLine("Who is this reservation for?");                                                        
+
+                                                        string reservationName = Console.ReadLine();
+                                                        DateTime endDate = startDate.AddDays(stayLength);
+                                                        decimal totalCost = r.DailyRate * stayLength;
+                                                        int conNum = reservationDAO.CreateReservation(r.SpaceId, attendees, startDate, endDate, reservationName);
+                                                        Console.WriteLine();
+                                                        Console.WriteLine("Thanks for submitting your reservation! The details for your event are listed below:");
+                                                        Console.WriteLine("Confirmation #: " + conNum);
+                                                        Console.WriteLine("Venue: " + selected.VenueName);
+                                                        Console.WriteLine("Space: " + r.SpaceName);
+                                                        Console.WriteLine("Reserved for: " + reservationName);
+                                                        Console.WriteLine("Attendees: " + attendees);
+                                                        Console.WriteLine("Arrival Date: " + startDate);
+                                                        Console.WriteLine("Departure Date: " + endDate);
+                                                        Console.WriteLine("Total Cost: " + totalCost.ToString("c"));
+                                                    }
+                                                }
+
+
+                                            }
                                         }
                                         else
                                         {
@@ -209,11 +243,6 @@ namespace Capstone
 
                                         break;
 
-                                    /*
-                                         //case "3":
-
-                                         */
-
 
                                     case "r":
                                         return;
@@ -222,8 +251,6 @@ namespace Capstone
                                         Console.WriteLine("The command provided was not a valid command, please try again.");
                                         break;
                                 }
-
-                                //PrintSubMenu();
                             }
 
 
