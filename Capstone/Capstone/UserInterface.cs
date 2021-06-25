@@ -32,6 +32,7 @@ namespace Capstone
         private readonly SpacesSqlDAO spaceDAO;
         private readonly ReservationSqlDAO reservationDAO;
         private readonly DateConverter dateCon = new DateConverter();
+        private readonly PrintShop printShop = new PrintShop();
 
         int chosenVenue = 0;
         int chosenSpace = 0;
@@ -49,8 +50,8 @@ namespace Capstone
 
         public void Run()
         {
-            PrintHeader();
-            PrintMenu();
+            printShop.PrintHeader();
+            printShop.PrintMainMenu();
             while (true)
             {
                 string command = Console.ReadLine();
@@ -73,11 +74,9 @@ namespace Capstone
                         break;
                 }
 
-                PrintMenu();
+                printShop.PrintMainMenu();
             }
         }
-
-
 
         private void ListVenues()
         {
@@ -108,213 +107,172 @@ namespace Capstone
                 {
                     int i = int.Parse(command);
 
-
                     foreach (Venue v in venues)
                     {
                         if (v.VenueOrdinal == i)
                         {
-                            int venueId = v.VenueID;
-                            chosenVenue = venueId;
-                            Venue selected = venueDAO.VenueDetails(v.VenueID);
-                            Console.WriteLine(selected.VenueName);
-                            Console.WriteLine("Location: " + selected.CityName + ", " + selected.StateAbbreviation);
-                            Console.WriteLine("Categories:");
-                            List<string> VenueCategories = categoryDAO.ListCategories(venueId);
-                            foreach (string cat in VenueCategories)
-                            {
-                                Console.Write(cat + " ");
-                            }
-                            Console.WriteLine();
-                            Console.WriteLine(selected.VenueDescription);
-                            Console.WriteLine();
-
-
-                            PrintSubMenu();
-                            while (true)
-                            {
-                                string newCommand = Console.ReadLine();
-
-                                Console.Clear();
-
-                                switch (newCommand.ToLower())
-                                {
-                                    case "1":
-                                        ICollection<Space> spaces = spaceDAO.ListSpaces(chosenVenue);
-                                        Console.Clear();
-                                        Console.WriteLine("     Name                Open   Close   Daily Rate   Max. Occupancy");
-                                        foreach (Space s in spaces)
-                                        {
-
-                                            string openFrom = dateCon.FormatDate(s.OpenFrom);
-                                            string openTo = dateCon.FormatDate(s.OpenTo);
-                                            Console.WriteLine("#" + s.SpaceOrdinal.ToString().PadRight(5) + s.Name.PadRight(20) + openFrom.PadRight(7) + openTo.PadRight(8) + s.DailyRate.ToString("c").PadRight(13) + s.MaxOccupancy);
-                                        }
-                                        PrintSpaceMenu();
-                                        string userInput = Console.ReadLine().ToLower();
-                                        if (userInput == "r")
-                                        {
-                                            Console.Clear();
-                                            return;
-                                        }
-
-                                        else if (userInput == "1")
-                                        {
-                                            Console.WriteLine("When do you need the space? mon/day/year");
-                                            string reply = Console.ReadLine();
-                                            DateTime startDate = DateTime.Parse(reply);
-                                            Console.WriteLine("How many days will you need the space? ");
-                                            reply = Console.ReadLine();
-                                            int stayLength = int.Parse(reply);
-                                            Console.WriteLine("How many people will be in attendance? ");
-                                            reply = Console.ReadLine();
-                                            int attendees = int.Parse(reply);
-
-                                            ICollection<Reservation> reservationSpace = reservationDAO.SearchSpace(attendees, stayLength, startDate, chosenVenue);
-                                            Console.Clear();
-                                            Console.WriteLine("The following spaces are available based on your needs:");
-                                            Console.WriteLine();
-                                            Console.WriteLine("Space #   Name                Daily Rate   Max Occup.   Accessible?   Total Cost");
-                                            foreach (Reservation r in reservationSpace)
-                                            {
-                                                decimal totalCost = r.DailyRate * stayLength;
-                                                string adaComp = "";
-                                                if (r.IsAccessible)
-                                                {
-                                                    adaComp = "Yes";
-                                                }
-                                                else
-                                                {
-                                                    adaComp = "No";
-                                                }
-                                                Console.WriteLine(r.SpaceId.ToString().PadRight(10) + r.SpaceName.PadRight(20) + r.DailyRate.ToString("c").PadRight(13) + r.MaxOccupancy.ToString().PadRight(13) + adaComp.PadRight(14) + totalCost.ToString("c"));
-
-                                            }
-                                            //Console.ReadLine();
-                                            Console.WriteLine("Which space would you like to reserve (enter 0 to cancel)?");
-                                            string userChoice = Console.ReadLine();
-                                            if(userChoice == "0")
-                                            {
-                                                return;
-                                            }
-                                            else
-                                            {
-                                                chosenSpace = int.Parse(userChoice);
-
-                                                foreach (Reservation r in reservationSpace)
-                                                {
-                                                    if (r.SpaceId == chosenSpace)
-                                                    {
-                                                        Console.WriteLine("Who is this reservation for?");                                                        
-
-                                                        string reservationName = Console.ReadLine();
-                                                        DateTime endDate = startDate.AddDays(stayLength);
-                                                        decimal totalCost = r.DailyRate * stayLength;
-                                                        int conNum = reservationDAO.CreateReservation(r.SpaceId, attendees, startDate, endDate, reservationName);
-                                                        Console.WriteLine();
-                                                        Console.WriteLine("Thanks for submitting your reservation! The details for your event are listed below:");
-                                                        Console.WriteLine("Confirmation #: " + conNum);
-                                                        Console.WriteLine("Venue: " + selected.VenueName);
-                                                        Console.WriteLine("Space: " + r.SpaceName);
-                                                        Console.WriteLine("Reserved for: " + reservationName);
-                                                        Console.WriteLine("Attendees: " + attendees);
-                                                        Console.WriteLine("Arrival Date: " + startDate);
-                                                        Console.WriteLine("Departure Date: " + endDate);
-                                                        Console.WriteLine("Total Cost: " + totalCost.ToString("c"));
-                                                    }
-                                                }
-
-
-                                            }
-                                        }
-                                        else
-                                        {
-                                            Console.WriteLine("Invalid Input. Returning to previous menu.");
-                                        }
-                                        return;
-
-                                    case "2":
-                                        ICollection<Reservation> reservations = reservationDAO.ListReservations(chosenVenue);
-                                        Console.Clear();
-                                        Console.WriteLine("The following reservations exist for this venue:");
-                                        foreach (Reservation r in reservations)
-                                        {
-                                            Console.WriteLine(r.ReservatoinOrdinal + ": " + r.SpaceName + "\t" + r.ReservedFor);
-                                        }
-
-                                        break;
-
-
-                                    case "r":
-                                        return;
-
-                                    default:
-                                        Console.WriteLine("The command provided was not a valid command, please try again.");
-                                        break;
-                                }
-                            }
-
-
+                            CategorySubMenu(v);
+                            return;
                         }
-
                     }
-
                     Console.WriteLine("Invalid Input");
                     break;
                 }
-
-
-
             }
 
+            void MakeReservation(Venue selected, DateTime startDate, int stayLength, int attendees, ICollection<Reservation> reservationSpace, string userChoice)
+            {
+                chosenSpace = int.Parse(userChoice);
+
+                foreach (Reservation r in reservationSpace)
+                {
+                    if (r.SpaceId == chosenSpace)
+                    {
+                        Console.WriteLine("Who is this reservation for?");
+
+                        string reservationName = Console.ReadLine();
+                        DateTime endDate = startDate.AddDays(stayLength);
+                        decimal totalCost = r.DailyRate * stayLength;
+                        int conNum = reservationDAO.CreateReservation(r.SpaceId, attendees, startDate, endDate, reservationName);
+                        Console.WriteLine();
+                        Console.WriteLine("Thanks for submitting your reservation! The details for your event are listed below:");
+                        Console.WriteLine("Confirmation #: " + conNum);
+                        Console.WriteLine("Venue: " + selected.VenueName);
+                        Console.WriteLine("Space: " + r.SpaceName);
+                        Console.WriteLine("Reserved for: " + reservationName);
+                        Console.WriteLine("Attendees: " + attendees);
+                        Console.WriteLine("Arrival Date: " + startDate);
+                        Console.WriteLine("Departure Date: " + endDate);
+                        Console.WriteLine("Total Cost: " + totalCost.ToString("c"));
+                    }
+                }
+            }
+
+            void SearchReservation(out DateTime startDate, out int stayLength, out int attendees, out ICollection<Reservation> reservationSpace)
+            {
+                Console.WriteLine("When do you need the space? mon/day/year");
+                string reply = Console.ReadLine();
+                startDate = DateTime.Parse(reply);
+                Console.WriteLine("How many days will you need the space? ");
+                reply = Console.ReadLine();
+                stayLength = int.Parse(reply);
+                Console.WriteLine("How many people will be in attendance? ");
+                reply = Console.ReadLine();
+                attendees = int.Parse(reply);
+                reservationSpace = reservationDAO.SearchSpace(attendees, stayLength, startDate, chosenVenue);
+                Console.Clear();
+                Console.WriteLine("The following spaces are available based on your needs:");
+                Console.WriteLine();
+                Console.WriteLine("Space #   Name                Daily Rate   Max Occup.   Accessible?   Total Cost");
+                foreach (Reservation r in reservationSpace)
+                {
+                    decimal totalCost = r.DailyRate * stayLength;
+                    string adaComp = "";
+                    if (r.IsAccessible)
+                    {
+                        adaComp = "Yes";
+                    }
+                    else
+                    {
+                        adaComp = "No";
+                    }
+                    Console.WriteLine(r.SpaceId.ToString().PadRight(10) + r.SpaceName.PadRight(20) + r.DailyRate.ToString("c").PadRight(13) + r.MaxOccupancy.ToString().PadRight(13) + adaComp.PadRight(14) + totalCost.ToString("c"));
+                }
+            }
+
+            void ViewMenuSpaces(Venue selected)
+            {
+                ICollection<Space> spaces = spaceDAO.ListSpaces(chosenVenue);
+                Console.Clear();
+                Console.WriteLine("     Name                Open   Close   Daily Rate   Max. Occupancy");
+                foreach (Space s in spaces)
+                {
+
+                    string openFrom = dateCon.FormatDate(s.OpenFrom);
+                    string openTo = dateCon.FormatDate(s.OpenTo);
+                    Console.WriteLine("#" + s.SpaceOrdinal.ToString().PadRight(5) + s.Name.PadRight(20) + openFrom.PadRight(7) + openTo.PadRight(8) + s.DailyRate.ToString("c").PadRight(13) + s.MaxOccupancy);
+                }
+                printShop.PrintSpaceMenu();
+                string userInput = Console.ReadLine().ToLower();
+                if (userInput == "r")
+                {
+                    Console.Clear();
+                    return;
+                }
+
+                else if (userInput == "1")
+                {
+                    SearchReservation(out DateTime startDate, out int stayLength, out int attendees, out ICollection<Reservation> reservationSpace);
+
+                    Console.WriteLine("Which space would you like to reserve (enter 0 to cancel)?");
+                    string userChoice = Console.ReadLine();
+                    if (userChoice == "0")
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        MakeReservation(selected, startDate, stayLength, attendees, reservationSpace, userChoice);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Invalid Input. Returning to previous menu.");
+                }
+                return;
+            }
+
+            void CategorySubMenu(Venue v)
+            {
+                int venueId = v.VenueID;
+                chosenVenue = venueId;
+                Venue selected = venueDAO.VenueDetails(v.VenueID);
+                Console.WriteLine(selected.VenueName);
+                Console.WriteLine("Location: " + selected.CityName + ", " + selected.StateAbbreviation);
+                Console.WriteLine("Categories:");
+                List<string> VenueCategories = categoryDAO.ListCategories(venueId);
+                foreach (string cat in VenueCategories)
+                {
+                    Console.Write(cat + " ");
+                }
+                Console.WriteLine();
+                Console.WriteLine(selected.VenueDescription);
+                Console.WriteLine();
+
+
+                printShop.PrintSubMenu();
+                while (true)
+                {
+                    string newCommand = Console.ReadLine();
+
+                    Console.Clear();
+
+                    switch (newCommand.ToLower())
+                    {
+                        case "1":
+                            ViewMenuSpaces(selected);
+                            return;
+
+                        case "2":
+                            ICollection<Reservation> reservations = reservationDAO.ListReservations(chosenVenue);
+                            Console.Clear();
+                            Console.WriteLine("The following reservations exist for this venue:");
+                            foreach (Reservation r in reservations)
+                            {
+                                Console.WriteLine(r.ReservatoinOrdinal + ": " + r.SpaceName + "\t" + r.ReservedFor);
+                            }
+
+                            return;
+
+                        case "r":
+                            return;
+
+                        default:
+                            Console.WriteLine("The command provided was not a valid command, please try again.");
+                            break;
+                    }
+                }
+            }
         }
-
-
-        private void PrintHeader()
-        {
-            Console.WriteLine();
-            Console.WriteLine(@"$$$$$$$\                                                              $$\     $$\                           $$\   $$\   $$\     $$\ $$\ $$\   $$\               ");
-            Console.WriteLine(@"$$  __$$\                                                             $$ |    \__|                          $$ |  $$ |  $$ |    \__|$$ |\__|  $$ |              ");
-            Console.WriteLine(@"$$ |  $$ | $$$$$$\   $$$$$$$\  $$$$$$\   $$$$$$\ $$\    $$\ $$$$$$\ $$$$$$\   $$\  $$$$$$\  $$$$$$$\        $$ |  $$ |$$$$$$\   $$\ $$ |$$\ $$$$$$\   $$\   $$\ ");
-            Console.WriteLine(@"$$$$$$$  |$$  __$$\ $$  _____|$$  __$$\ $$  __$$\\$$\  $$  |\____$$\\_$$  _|  $$ |$$  __$$\ $$  __$$\       $$ |  $$ |\_$$  _|  $$ |$$ |$$ |\_$$  _|  $$ |  $$ |");
-            Console.WriteLine(@"$$  __$$< $$$$$$$$ |\$$$$$$\  $$$$$$$$ |$$ |  \__|\$$\$$  / $$$$$$$ | $$ |    $$ |$$ /  $$ |$$ |  $$ |      $$ |  $$ |  $$ |    $$ |$$ |$$ |  $$ |    $$ |  $$ |");
-            Console.WriteLine(@"$$ |  $$ |$$   ____| \____$$\ $$   ____|$$ |       \$$$  / $$  __$$ | $$ |$$\ $$ |$$ |  $$ |$$ |  $$ |      $$ |  $$ |  $$ |$$\ $$ |$$ |$$ |  $$ |$$\ $$ |  $$ |");
-            Console.WriteLine(@"$$ |  $$ |\$$$$$$$\ $$$$$$$  |\$$$$$$$\ $$ |        \$  /  \$$$$$$$ | \$$$$  |$$ |\$$$$$$  |$$ |  $$ |      \$$$$$$  |  \$$$$  |$$ |$$ |$$ |  \$$$$  |\$$$$$$$ |");
-            Console.WriteLine(@"\__|  \__| \_______|\_______/  \_______|\__|         \_/    \_______|  \____/ \__| \______/ \__|  \__|       \______/    \____/ \__|\__|\__|   \____/  \____$$ |");
-            Console.WriteLine(@"                                                                                                                                                      $$\   $$ |");
-            Console.WriteLine(@"                                                                                                                                                      \$$$$$$  |");
-            Console.WriteLine(@"                                                                                                                                                       \______/");
-            Console.WriteLine();
-            Console.WriteLine();
-        }
-
-        private void PrintMenu()
-        {
-            Console.WriteLine("Main Menu - What would you like to do?");
-            Console.WriteLine(" 1) List Venues");
-            Console.WriteLine(" Q) Quit");
-            Console.WriteLine();
-        }
-
-        private void PrintSubMenu()
-        {
-            Console.WriteLine("What would you like to do next?");
-            Console.WriteLine("1) View Spaces");
-            Console.WriteLine("2) Search for Reservation");
-            Console.WriteLine("R) Return to Previous Screen");
-
-        }
-
-        private void PrintSpaceMenu()
-        {
-            Console.WriteLine("What would you like to do next?");
-            Console.WriteLine("1) Reserve a space");
-            Console.WriteLine("R) Return to previous screen");
-        }
-
-
-
-
-
-
     }
 }
