@@ -84,7 +84,10 @@ namespace Capstone
             ICollection<Venue> venues = venueDAO.ListVenues();
             if (venues.Count > 0)
             {
+                
                 Console.WriteLine("Which venue would you like to view? ");
+                
+                
                 foreach (Venue venue in venues)
                 {
                     Console.WriteLine(venue.VenueOrdinal + ")".PadRight(10) + venue.VenueName.PadRight(40));

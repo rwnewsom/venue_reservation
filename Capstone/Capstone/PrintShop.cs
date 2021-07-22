@@ -7,7 +7,7 @@ namespace Capstone
     class PrintShop
     {
         public void PrintHeader()
-        {
+        { //TODO: Make this ASCII title slightly less obnoxious and better for smaller screens
             Console.WriteLine();
             Console.WriteLine(@"$$$$$$$\                                                              $$\     $$\                           $$\   $$\   $$\     $$\ $$\ $$\   $$\               ");
             Console.WriteLine(@"$$  __$$\                                                             $$ |    \__|                          $$ |  $$ |  $$ |    \__|$$ |\__|  $$ |              ");
